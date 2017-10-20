@@ -1,28 +1,43 @@
 /* Get required initial elements */
 var today = new Date();
-var year = today.getFullYear();
-var month = today.getMonth();
+
+var activeCalendar = today;
+var year = activeCalendar.getFullYear();
+var month = activeCalendar.getMonth();
 
 var calendar = document.querySelector('.calendar');
 var weeks = Array.from(calendar.querySelectorAll('.week'));
 var days = Array.from(calendar.querySelectorAll('.day'));
 
 var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
+var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 /* Add dates to the appropriate squares */
-function daysInMonth(month,year) {
-    return new Date(year, month, 0).getDate();
+Date.prototype.monthDays = function(){
+    var d= new Date(this.getFullYear(), this.getMonth()+1, 0);
+    return d.getDate();
 }
 
-var firstDayOfMonth = new Date(year, month);
-var firstWeekDay = firstDayOfMonth.getDay();
-var lastDayInMonth = daysInMonth(year, month);
-var dayToSet = 1;
-
-for (var i = firstWeekDay; i < firstWeekDay + lastDayInMonth; i++) {
-  days[i].innerHTML += `<p class="day-number">${dayToSet}</p>`;
-  dayToSet++;
+function setActiveCalendar(date) {
+  activeCalendar = date;
+  year = activeCalendar.getFullYear();
+  month = activeCalendar.getMonth();
 }
+
+/* Change months */
+function changeMonth(month, year) {
+  var firstDayOfMonth = new Date(year, month);
+  var firstWeekDay = firstDayOfMonth.getDay();
+  var lastDayInMonth = firstDayOfMonth.monthDays();
+  setActiveCalendar(firstDayOfMonth);
+  console.log(lastDayInMonth);
+  var dayToSet = 1;
+  days.forEach(day => day.innerHTML = "");
+  for (var i = firstWeekDay; i < firstWeekDay + lastDayInMonth; i++) {
+    days[i].innerHTML = `<p class="day-number">${dayToSet}</p>`;
+    dayToSet++;
+  }
+}
+changeMonth(month,year);
 
 /* Edit panel variables */
 var editDay = document.querySelector('.edit-day-container');
@@ -58,9 +73,9 @@ function numberFadeOut() {
 
 /* Menu toggle functionality */
 function toggleMenu() {
-  if(!menuOpen) {
+  if(!menuOpen && !editOpen) {
     numberFadeOut();
-    calendar.style.backgroundColor = "#827f7d";
+    calendar.style.backgroundColor = "#454545";
     menu.classList.add('menu-container-open');
     menuOpen = true;
   }
@@ -78,31 +93,47 @@ menuIcon.addEventListener('mousemove',
 calendar.addEventListener('mouseout',
   () => menuIcon.classList.remove('menu-icon-mousemove'));
 menuIcon.addEventListener('click', toggleMenu);
-closeMenuIcon.addEventListener('click', () => {
-  calendar.style.backgroundColor = "white";
-  menu.classList.remove('menu-container-open');
-  menuOpen = false;
-});
+closeMenuIcon.addEventListener('click', () =>
+  {
+    calendar.style.backgroundColor = "white";
+    menu.classList.remove('menu-container-open');
+    menuOpen = false;
+  });
 menu.addEventListener('transitionend',
   () => numberFadeIn(menuOpen));
 
+
 /* Day edit toggle functionality */
 function toggleEditDay() {
-  if(!editOpen && !menuOpen) {
-    calendar.style.backgroundColor = "#827f7d";
-    numberFadeOut();
-    editDay.classList.add('edit-day-container-open');
-    editOpen = true;
+  if (this.textContent != "") {
+    if(!editOpen && !menuOpen) {
+      var date = editDay.querySelector('.date');
+      var weekdayClicked = weekdays[this.dataset.dayofweek];
+      var dayNumberClicked = this.querySelector('.day-number');
+      date.textContent = `${weekdayClicked}, ${months[month]} ${dayNumberClicked.textContent}, ${year}`;
+      calendar.style.backgroundColor = "#454545";
+      numberFadeOut();
+      editDay.classList.add('edit-day-container-open');
+      editOpen = true;
+    }
+    else {
+      calendar.style.backgroundColor = "white";
+      editDay.classList.remove('edit-day-container-open');
+      editOpen = false;
+    }
   }
 }
 
-days.forEach(day => { if (day.textContent != "") day.addEventListener('click', toggleEditDay) });
+days.forEach(day => { day.addEventListener('click', toggleEditDay) });
 closeEditIcon.addEventListener('click', (e) => {
   calendar.style.backgroundColor = "white";
   editDay.classList.remove('edit-day-container-open');
   editOpen = false;
 });
-
+calendar.addEventListener('click', () =>
+  {
+    if (menuOpen) toggleMenu();
+  });
 editDay.addEventListener('transitionend',
   () => numberFadeIn(editOpen));
 
