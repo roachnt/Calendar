@@ -7,7 +7,7 @@ body {
 }
 
 .calendar {
-  height: 99.7vh;
+  height: 100vh;
   transition: .5s;
 }
 
@@ -42,17 +42,8 @@ body {
   transition: visibility 0s, opacity 0.5s linear;
 }
 
-.day-weekday {
-  display: none;
-  float: left;
-  margin: 5px;
-  color: white;
-  position: absolute;
-}
-
-.day-weekday-hover {
-  display: block;
-  color: grey
+.today {
+  background: #ff6352;
 }
 
 .menu-icon {
@@ -66,6 +57,54 @@ body {
 }
 
 #menu-icon {
+  font-size: 48px;
+  color: white;
+  background-color: #50e6c1;
+  border-radius: 100%;
+  padding: 10px;
+  margin: 10px;
+  cursor: pointer;
+  border: 1px solid white;
+}
+
+.calendar-back-icon {
+  position: absolute;
+  transition: 0.5s cubic-bezier(0.61,-0.19, 0.7,-0.11);
+  transform: translateX(-120%);
+}
+
+.calendar-back-icon-mousemove {
+  transform: translateX(0);
+}
+
+#calendar-back-icon {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  font-size: 48px;
+  color: white;
+  background-color: #50e6c1;
+  border-radius: 100%;
+  padding: 10px;
+  margin: 10px;
+  cursor: pointer;
+  border: 1px solid white;
+}
+
+.calendar-forward-icon {
+  position: absolute;
+  transition: 0.5s cubic-bezier(0.61,-0.19, 0.7,-0.11);
+  transform: translateX(120%);
+}
+
+.calendar-forward-icon-mousemove {
+  transform: translateX(0);
+}
+
+#calendar-forward-icon {
+  bottom: 0;
+  right: 0;
+  position: absolute;
   font-size: 48px;
   color: white;
   background-color: #50e6c1;
@@ -92,10 +131,9 @@ body {
 
 .menu-container-open {
   transform: translateY(0);
-  box-shadow: 0px 0px 10px darkgrey;
 }
 
-.edit-day-container {
+/*.edit-day-container {
   top: 50%;
   left: 50%;
   width: 600px;
@@ -111,13 +149,13 @@ body {
 
 .edit-day-container-open {
   transform: translateY(0);
-  box-shadow: 0px 0px 10px darkgrey;
-}
+} */
 
 .date {
-  position: absolute;
+  text-align: center;
+  width: 100%;
   margin: 10px;
-  color: white;
+  color: black;
   font-size: 30px;
   font-weight: bold;
 }
@@ -134,4 +172,69 @@ body {
   color: white;
   cursor: pointer;
   margin: 3px;
+}
+
+.edit-day-container {
+  height: 99.8vh;
+  width: 100vw;
+  position: absolute;
+  background-color: white;
+  display: none;
+  transition: .5s;
+}
+
+.edit-day-container-open {
+  display: flex;
+}
+
+.day-schedule {
+  width: 50%;
+  height: 100%;
+  /*border-left: 1px solid #50e6c1;*/
+  overflow: auto;
+}
+
+.day-info {
+  width: 50%;
+  height: 100%;
+  /*border-right: 1px solid #50e6c1;*/
+}
+
+.hour {
+  border: 1px solid black;
+  height: 10%;
+  width: 99.8%;
+}
+
+.half-hour {
+  border-bottom: 1px solid lightgrey;
+  height: 50%;
+  width: 100%;
+  cursor: pointer;
+}
+
+.half-hour-hover {
+  background-color: #50e6c1;
+}
+
+.close-icon {
+  position: absolute;
+  transition: 0.5s cubic-bezier(0.61,-0.19, 0.7,-0.11);
+  transform: translateX(120%);
+}
+
+.close-icon-mousemove {
+  transform: translateX(0);
+}
+
+#close-icon {
+  right: 0;
+  font-size: 48px;
+  color: white;
+  background-color: #50e6c1;
+  border-radius: 100%;
+  padding: 10px;
+  margin: 10px;
+  cursor: pointer;
+  border: 1px solid white;
 }

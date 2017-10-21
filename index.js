@@ -11,6 +11,7 @@ var days = Array.from(calendar.querySelectorAll('.day'));
 
 var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
 /* Add dates to the appropriate squares */
 Date.prototype.monthDays = function(){
     var d= new Date(this.getFullYear(), this.getMonth()+1, 0);
@@ -29,11 +30,14 @@ function changeMonth(month, year) {
   var firstWeekDay = firstDayOfMonth.getDay();
   var lastDayInMonth = firstDayOfMonth.monthDays();
   setActiveCalendar(firstDayOfMonth);
-  console.log(lastDayInMonth);
   var dayToSet = 1;
   days.forEach(day => day.innerHTML = "");
   for (var i = firstWeekDay; i < firstWeekDay + lastDayInMonth; i++) {
     days[i].innerHTML = `<p class="day-number">${dayToSet}</p>`;
+    if (activeCalendar.getMonth() == today.getMonth()
+      && days[i].textContent == today.getDate().toString()) {
+      days[i].classList.add('today');
+    }
     dayToSet++;
   }
 }
@@ -46,6 +50,8 @@ var closeEditIcon = editDay.querySelector("#close-edit-day");
 
 /* Menu panel variables */
 var menuIcon = document.querySelector('.menu-icon');
+var calBackIcon = document.querySelector('.calendar-back-icon');
+var calForwardIcon = document.querySelector('.calendar-forward-icon');
 var menu = document.querySelector('.menu-container');
 let menuOpen = false;
 var closeMenuIcon = menu.querySelector("#close-menu");
@@ -55,6 +61,10 @@ function numberFadeIn(checkBoolean) {
   days.forEach(day => {
     var daynumber = day.querySelector('.day-number');
     if (!checkBoolean && daynumber != null) {
+      if (activeCalendar.getMonth() == today.getMonth()
+        && day.textContent == today.getDate().toString()) {
+        day.classList.add('today');
+      }
       daynumber.style.opacity = 1;
       daynumber.style.visibility = 'visible';
     }
@@ -64,6 +74,7 @@ function numberFadeIn(checkBoolean) {
 function numberFadeOut() {
   days.forEach(day => {
     var daynumber = day.querySelector('.day-number');
+    if (day.classList.contains('today')) day.classList.remove('today');
     if (daynumber != null) {
       daynumber.style.opacity = 0;
       daynumber.style.visibility = 'hidden';
@@ -86,6 +97,8 @@ function toggleMenu() {
   }
 }
 
+/* icon functionality */
+/* menu icon */
 calendar.addEventListener('mousemove',
   () => menuIcon.classList.add('menu-icon-mousemove'));
 menuIcon.addEventListener('mousemove',
@@ -102,6 +115,33 @@ closeMenuIcon.addEventListener('click', () =>
 menu.addEventListener('transitionend',
   () => numberFadeIn(menuOpen));
 
+/* back icon */
+calendar.addEventListener('mousemove',
+  () => {
+    if (!menuOpen && !editOpen)
+    calBackIcon.classList.add('calendar-back-icon-mousemove');
+});
+calBackIcon.addEventListener('mousemove',
+  () => calBackIcon.classList.add('calendar-back-icon-mousemove'));
+calendar.addEventListener('mouseout',
+  () => calBackIcon.classList.remove('calendar-back-icon-mousemove'));
+calBackIcon.addEventListener('click', () => {
+  changeMonth(month - 1, year);
+});
+
+/* forward icon */
+calendar.addEventListener('mousemove',
+  () => {
+    if (!menuOpen && !editOpen)
+    calForwardIcon.classList.add('calendar-forward-icon-mousemove');
+  });
+calForwardIcon.addEventListener('mousemove',
+  () => calForwardIcon.classList.add('calendar-forward-icon-mousemove'));
+calendar.addEventListener('mouseout',
+  () => calForwardIcon.classList.remove('calendar-forward-icon-mousemove'));
+calForwardIcon.addEventListener('click', () => {
+  changeMonth(month + 1, year);
+});
 
 /* Day edit toggle functionality */
 function toggleEditDay() {
@@ -111,8 +151,6 @@ function toggleEditDay() {
       var weekdayClicked = weekdays[this.dataset.dayofweek];
       var dayNumberClicked = this.querySelector('.day-number');
       date.textContent = `${weekdayClicked}, ${months[month]} ${dayNumberClicked.textContent}, ${year}`;
-      calendar.style.backgroundColor = "#454545";
-      numberFadeOut();
       editDay.classList.add('edit-day-container-open');
       editOpen = true;
     }
@@ -125,17 +163,10 @@ function toggleEditDay() {
 }
 
 days.forEach(day => { day.addEventListener('click', toggleEditDay) });
-closeEditIcon.addEventListener('click', (e) => {
-  calendar.style.backgroundColor = "white";
-  editDay.classList.remove('edit-day-container-open');
-  editOpen = false;
-});
 calendar.addEventListener('click', () =>
   {
     if (menuOpen) toggleMenu();
   });
-editDay.addEventListener('transitionend',
-  () => numberFadeIn(editOpen));
 
 /* Styling for hovering over a date */
 days.forEach(day => day.addEventListener('mousemove', () =>
@@ -148,3 +179,27 @@ days.forEach(day => day.addEventListener('mouseout', () =>
     if (day.classList.contains('day-hover')) day.classList.remove('day-hover');
     else day.classList.remove('day-empty');
   }));
+
+/* Edit day menu functionality */
+var closeIcon = document.querySelector('.close-icon');
+
+editDay.addEventListener('mousemove', () => {
+  closeIcon.classList.add('close-icon-mousemove');
+});
+editDay.addEventListener('mouseout', () => {
+  closeIcon.classList.remove('close-icon-mousemove');
+});
+closeIcon.addEventListener('click', toggleEditDay);
+
+/* schedule functionality */
+var dayInfo = editDay.querySelector('.day-info');
+var daySchedule = editDay.querySelector('.day-schedule');
+var hours = daySchedule.querySelectorAll('.hour');
+var halfHours = daySchedule.querySelectorAll('.half-hour');
+
+halfHours.forEach(halfHour => halfHour.addEventListener('mousemove', () => {
+  halfHour.classList.add('half-hour-hover');
+}));
+halfHours.forEach(halfHour => halfHour.addEventListener('mouseout', () => {
+  halfHour.classList.remove('half-hour-hover');
+}));
