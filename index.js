@@ -25,6 +25,7 @@ function setActiveCalendar(date) {
 }
 
 /* Change months */
+var currentMonth = document.querySelector('.current-month');
 function changeMonth(month, year) {
   var firstDayOfMonth = new Date(year, month);
   var firstWeekDay = firstDayOfMonth.getDay();
@@ -40,6 +41,9 @@ function changeMonth(month, year) {
     }
     dayToSet++;
   }
+  if (month == 12) month = 0;
+  if (month == -1) month = 11;
+  currentMonth.innerHTML = `<p>${months[month]}</p>`
 }
 changeMonth(month,year);
 
@@ -126,6 +130,9 @@ calBackIcon.addEventListener('mousemove',
 calendar.addEventListener('mouseout',
   () => calBackIcon.classList.remove('calendar-back-icon-mousemove'));
 calBackIcon.addEventListener('click', () => {
+  days.forEach(day => {
+    if (day.classList.contains('today')) day.classList.remove('today');
+  });
   changeMonth(month - 1, year);
 });
 
@@ -140,6 +147,9 @@ calForwardIcon.addEventListener('mousemove',
 calendar.addEventListener('mouseout',
   () => calForwardIcon.classList.remove('calendar-forward-icon-mousemove'));
 calForwardIcon.addEventListener('click', () => {
+  days.forEach(day => {
+    if (day.classList.contains('today')) day.classList.remove('today');
+  });
   changeMonth(month + 1, year);
 });
 
@@ -203,3 +213,18 @@ halfHours.forEach(halfHour => halfHour.addEventListener('mousemove', () => {
 halfHours.forEach(halfHour => halfHour.addEventListener('mouseout', () => {
   halfHour.classList.remove('half-hour-hover');
 }));
+
+/* Current month functionality */
+calendar.addEventListener('mousemove', () => {
+  if (!menuOpen && !editOpen)
+  currentMonth.classList.add('current-month-mousemove');
+});
+calendar.addEventListener('mouseout', () => {
+  currentMonth.classList.remove('current-month-mousemove');
+});
+calBackIcon.addEventListener('mousemove', () => {
+  currentMonth.classList.add('current-month-mousemove');
+});
+calForwardIcon.addEventListener('mousemove', () => {
+  currentMonth.classList.add('current-month-mousemove');
+});

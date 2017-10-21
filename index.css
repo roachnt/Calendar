@@ -133,23 +133,30 @@ body {
   transform: translateY(0);
 }
 
-/*.edit-day-container {
-  top: 50%;
+.current-month {
+  bottom: 0;
   left: 50%;
-  width: 600px;
-  height: 300px;
-  margin-top: -150px;
-  margin-left: -300px;
+  width: 250px;
+  height: 55px;
+  margin-left: -125px;
+  margin-bottom: 10px;
   position: absolute;
   background-color: #50e6c1;
   border-radius: 1%;
-  transition: 1s cubic-bezier(0.61,-0.19, 0.7,-0.11);
+  transition: .5s cubic-bezier(0.61,-0.19, 0.7,-0.11);
+  font-size: 50px;
+  text-align: center;
+  color: white;
   transform: translateY(250%);
 }
 
-.edit-day-container-open {
+.current-month p {
+  margin: 0;
+}
+
+.current-month-mousemove {
   transform: translateY(0);
-} */
+}
 
 .date {
   text-align: center;
@@ -211,10 +218,12 @@ body {
   height: 50%;
   width: 100%;
   cursor: pointer;
+  transition: .8s;
 }
 
 .half-hour-hover {
   background-color: #50e6c1;
+  border: 1px solid #50e6c1;
 }
 
 .close-icon {
