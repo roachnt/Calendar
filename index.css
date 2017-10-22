@@ -4,6 +4,7 @@ body {
   position: fixed;
   overflow-y: scroll;
   width: 100%;
+  user-select: none;
 }
 
 .calendar {
@@ -164,7 +165,6 @@ body {
 
 .date {
   text-align: center;
-  width: 100%;
   margin: 10px;
   color: black;
   font-size: 30px;
@@ -229,10 +229,15 @@ body {
   height: 49%;
   width: 100%;
   cursor: pointer;
-  transition: .8s;
+  transition: .6s;
 }
 
 .half-hour-hover {
+  background-color: #50e6c1;
+  border: 1px solid #50e6c1;
+}
+
+.half-hour-mousedown {
   background-color: #50e6c1;
   border: 1px solid #50e6c1;
 }
@@ -252,6 +257,14 @@ body {
   margin: 0;
   display: table-cell;
   vertical-align: middle;
+}
+
+.selected-time {
+  margin: 5px;
+  margin-top: 20px;
+  height: 50px;
+  font-size: 40px;
+  text-align: center;
 }
 
 .close-icon {

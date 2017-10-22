@@ -36,6 +36,7 @@ function changeMonth(month, year) {
   for (var i = firstWeekDay; i < firstWeekDay + lastDayInMonth; i++) {
     days[i].innerHTML = `<p class="day-number">${dayToSet}</p>`;
     if (activeCalendar.getMonth() == today.getMonth()
+      && activeCalendar.getFullYear() == today.getFullYear()
       && days[i].textContent == today.getDate().toString()) {
       days[i].classList.add('today');
     }
@@ -182,6 +183,13 @@ days.forEach(day => { day.addEventListener('click', () => {
     currentMonth.classList.remove('current-month-mousemove');
   }
 })});
+editDay.addEventListener('mousemove', () => {
+  calForwardIcon.classList.remove('calendar-forward-icon-mousemove');
+  calBackIcon.classList.remove('calendar-back-icon-mousemove');
+  menuIcon.classList.remove('menu-icon-mousemove');
+  currentMonth.classList.remove('current-month-mousemove');
+});
+
 calendar.addEventListener('click', () =>
   {
     if (menuOpen) toggleMenu();
@@ -200,7 +208,23 @@ days.forEach(day => day.addEventListener('mouseout', () =>
   }));
 
 /* Edit day menu functionality */
+
+/* schedule functionality */
+var dayInfo = editDay.querySelector('.day-info');
+var daySchedule = editDay.querySelector('.day-schedule');
+var hours = daySchedule.querySelectorAll('.hour');
+var hourContainers = daySchedule.querySelectorAll('.hour-container');
+var halfHours = daySchedule.querySelectorAll('.half-hour');
+var selectedTime = dayInfo.querySelector('.selected-time');
+var startTime = "";
+var startPeriod = "";
+var endTime = "";
+var endPeriod = "";
+var lastTimeDown = "";
+var lastPeriodDown = "";
+let mouseDown = false;
 var closeIcon = document.querySelector('.close-icon');
+var firstDown;
 
 editDay.addEventListener('mousemove', () => {
   closeIcon.classList.add('close-icon-mousemove');
@@ -208,21 +232,38 @@ editDay.addEventListener('mousemove', () => {
 editDay.addEventListener('mouseout', () => {
   closeIcon.classList.remove('close-icon-mousemove');
 });
-closeIcon.addEventListener('click', toggleEditDay);
+closeIcon.addEventListener('click', () => {
+  toggleEditDay();
+  halfHours.forEach(halfHour => {
+    halfHour.classList.remove('half-hour-mousedown');
+  })
+});
 
-/* schedule functionality */
-var dayInfo = editDay.querySelector('.day-info');
-var daySchedule = editDay.querySelector('.day-schedule');
-var hours = daySchedule.querySelectorAll('.hour');
-var halfHours = daySchedule.querySelectorAll('.half-hour');
+// Set time data
+for (var i = 0; i < hourContainers.length; i++) {
+  var innerHalfs = hours[i].querySelectorAll('.half-hour');
+  var currTime = i % 12;
+  if (currTime == 0) currTime = 12;
+  innerHalfs[0].dataset.startTime = `${currTime}:00`;
+  innerHalfs[0].dataset.endTime = `${currTime}:30`;
+  innerHalfs[1].dataset.startTime = `${currTime}:30`;
+  innerHalfs[1].dataset.endTime = `${currTime + 1}:00`;
+  if (innerHalfs[1].dataset.endTime == "13:00") innerHalfs[1].dataset.endTime = `1:00`;
+  if (i < 12) innerHalfs.forEach(innerHalf => innerHalf.dataset.period = "am");
+  else innerHalfs.forEach(innerHalf => innerHalf.dataset.period = "pm");
+}
 
-halfHours.forEach(halfHour => halfHour.addEventListener('mousemove', () => {
-  halfHour.classList.add('half-hour-hover');
-}));
-halfHours.forEach(halfHour => halfHour.addEventListener('mouseout', () => {
-  halfHour.classList.remove('half-hour-hover');
-}));
+halfHours.forEach(halfHour => {
+  halfHour.addEventListener('mouseenter', () => {
+    halfHour.classList.add('half-hour-hover');
+  });
+  halfHour.addEventListener('mouseout', () => {
+    halfHour.classList.remove('half-hour-hover');
+  });
 
+});
+
+/* Day info functionality */
 
 
 /* Current month functionality */
