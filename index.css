@@ -57,6 +57,7 @@ body {
 }
 
 #menu-icon {
+  position: absolute;
   font-size: 48px;
   color: white;
   background-color: #50e6c1;
@@ -136,14 +137,15 @@ body {
 .current-month {
   bottom: 0;
   left: 50%;
-  width: 250px;
-  height: 55px;
-  margin-left: -125px;
-  margin-bottom: 10px;
+  width: 270px;
+  height: 68px;
+  margin-left: -135px;
+  margin-bottom: 12px;
   position: absolute;
   background-color: #50e6c1;
   border-radius: 1%;
-  transition: .5s cubic-bezier(0.61,-0.19, 0.7,-0.11);
+  border: 1px solid white;
+  transition: .8s cubic-bezier(0.61,-0.19, 0.7,-0.11);
   font-size: 50px;
   text-align: center;
   color: white;
@@ -152,6 +154,8 @@ body {
 
 .current-month p {
   margin: 0;
+  height: 100%;
+  padding-top: 2%;
 }
 
 .current-month-mousemove {
@@ -195,16 +199,23 @@ body {
 }
 
 .day-schedule {
-  width: 50%;
+  width: 60%;
   height: 100%;
   /*border-left: 1px solid #50e6c1;*/
   overflow: auto;
 }
 
 .day-info {
-  width: 50%;
+  width: 40%;
   height: 100%;
   /*border-right: 1px solid #50e6c1;*/
+}
+
+.hour-container {
+  width: 90%;
+  height: 100%;
+  margin-left: 10%;
+  border-left: 1px solid black;
 }
 
 .hour {
@@ -215,7 +226,7 @@ body {
 
 .half-hour {
   border-bottom: 1px solid lightgrey;
-  height: 50%;
+  height: 49%;
   width: 100%;
   cursor: pointer;
   transition: .8s;
@@ -224,6 +235,23 @@ body {
 .half-hour-hover {
   background-color: #50e6c1;
   border: 1px solid #50e6c1;
+}
+
+.time {
+  width: 10%;
+  height: 100%;
+  float: left;
+  margin: 0;
+  bottom: 0;
+  text-align: center;
+  display: table;
+}
+
+.time p {
+  height: 100%;
+  margin: 0;
+  display: table-cell;
+  vertical-align: middle;
 }
 
 .close-icon {

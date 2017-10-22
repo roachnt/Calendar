@@ -173,6 +173,15 @@ function toggleEditDay() {
 }
 
 days.forEach(day => { day.addEventListener('click', toggleEditDay) });
+
+days.forEach(day => { day.addEventListener('click', () => {
+  if (day.textContent != "") {
+    calForwardIcon.classList.remove('calendar-forward-icon-mousemove');
+    calBackIcon.classList.remove('calendar-back-icon-mousemove');
+    menuIcon.classList.remove('menu-icon-mousemove');
+    currentMonth.classList.remove('current-month-mousemove');
+  }
+})});
 calendar.addEventListener('click', () =>
   {
     if (menuOpen) toggleMenu();
@@ -213,6 +222,8 @@ halfHours.forEach(halfHour => halfHour.addEventListener('mousemove', () => {
 halfHours.forEach(halfHour => halfHour.addEventListener('mouseout', () => {
   halfHour.classList.remove('half-hour-hover');
 }));
+
+
 
 /* Current month functionality */
 calendar.addEventListener('mousemove', () => {
