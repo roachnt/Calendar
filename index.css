@@ -5,6 +5,7 @@ body {
   overflow-y: scroll;
   width: 100%;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 .calendar {

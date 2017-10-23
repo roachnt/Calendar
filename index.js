@@ -214,7 +214,7 @@ var dayInfo = editDay.querySelector('.day-info');
 var daySchedule = editDay.querySelector('.day-schedule');
 var hours = daySchedule.querySelectorAll('.hour');
 var hourContainers = daySchedule.querySelectorAll('.hour-container');
-var halfHours = daySchedule.querySelectorAll('.half-hour');
+var halfHours = Array.from(daySchedule.querySelectorAll('.half-hour'));
 var selectedTime = dayInfo.querySelector('.selected-time');
 var startTime = "";
 var startPeriod = "";
@@ -225,6 +225,7 @@ var lastPeriodDown = "";
 let mouseDown = false;
 var closeIcon = document.querySelector('.close-icon');
 var firstDown;
+var firstDownTime;
 
 editDay.addEventListener('mousemove', () => {
   closeIcon.classList.add('close-icon-mousemove');
@@ -253,15 +254,124 @@ for (var i = 0; i < hourContainers.length; i++) {
   else innerHalfs.forEach(innerHalf => innerHalf.dataset.period = "pm");
 }
 
-halfHours.forEach(halfHour => {
-  halfHour.addEventListener('mouseenter', () => {
+var goingDown = true;
+function clickDrag(halfHourBefore, halfHour, halfHourAfter) {
+  if (mouseDown) {
+    if (halfHours.indexOf(halfHour) < firstDown) {
+      goingDown = true;
+      if (halfHours.indexOf(halfHour) != 0) halfHourBefore.classList.remove('half-hour-mousedown');
+      endTime = firstDownTime.dataset.endTime;
+      endPeriod = firstDownTime.dataset.period;
+      startTime = halfHour.dataset.startTime;
+      startPeriod = halfHour.dataset.period;
+      selectedTime.textContent = `${startTime + startPeriod} - ${endTime + endPeriod}`
+    }
+    else if (halfHours.indexOf(halfHour) > firstDown) {
+      if (halfHours.indexOf(halfHour) != 47) halfHourAfter.classList.remove('half-hour-mousedown');
+      goingDown = false;
+      startTime = firstDownTime.dataset.startTime;
+      startPeriod = firstDownTime.dataset.period;
+      endTime = halfHour.dataset.endTime;
+      endPeriod = halfHour.dataset.period;
+      selectedTime.textContent = `${startTime + startPeriod} - ${endTime + endPeriod}`
+    }
+    else if (goingDown) {
+      if (halfHours.indexOf(halfHour) != 0) halfHourBefore.classList.remove('half-hour-mousedown');
+    }
+    else {
+      if (halfHours.indexOf(halfHour) != 47) halfHourAfter.classList.remove('half-hour-mousedown');
+    }
+    halfHour.classList.add('half-hour-mousedown');
+  }
+}
+
+// Listeners for half hour selection functionality
+var shiftDown = false;
+window.addEventListener('keydown', (e) => {
+  if (e.shiftKey) shiftDown = true;
+});
+window.addEventListener('keyup', (e) => {
+  shiftDown = false;
+});
+for (var i = 0; i < halfHours.length; i++) {
+  let halfHourBefore = halfHours[i-1];
+  let halfHour = halfHours[i];
+  let halfHourAfter = halfHours[i+1];
+  halfHour.addEventListener('mousemove', () => {
     halfHour.classList.add('half-hour-hover');
+    clickDrag(halfHourBefore, halfHour, halfHourAfter);
   });
-  halfHour.addEventListener('mouseout', () => {
+  halfHour.addEventListener('mouseleave', () => {
     halfHour.classList.remove('half-hour-hover');
   });
+  halfHour.addEventListener('mousedown', () => {
+    if (shiftDown) {
+      halfHours.forEach(halfHour => {
+        halfHour.classList.remove('half-hour-mousedown');
+      });
+      if (firstDown < halfHours.indexOf(halfHour)) {
+        for (let j = firstDown; j <= halfHours.indexOf(halfHour); j++) {
+            halfHours[j].classList.add('half-hour-mousedown');
+        }
+        startTime = firstDownTime.dataset.startTime + firstDownTime.dataset.period;
+        endTime = halfHour.dataset.endTime + halfHour.dataset.period;
+        selectedTime.textContent = `${startTime} - ${endTime}`
+      }
+      else {
+        for (let j = firstDown; j >= halfHours.indexOf(halfHour); j--) {
+            halfHours[j].classList.add('half-hour-mousedown');
+        }
+        startTime = halfHour.dataset.startTime + halfHour.dataset.period;
+        endTime = halfHour.dataset.endTime + halfHour.dataset.period;
+        selectedTime.textContent = `${startTime} - ${endTime}`
+      }
+    }
+    else {
+      halfHours.forEach(halfHour => {halfHour.classList.remove('half-hour-mousedown')});
+      firstDown = halfHours.indexOf(halfHour);
+      firstDownTime = halfHour;
+      mouseDown = true;
+    }
+  });
+  halfHour.addEventListener('mouseup', () => {
+    mouseDown = false;
+  });
+  halfHour.addEventListener('click', () => {
+    if (shiftDown) {
+      halfHours.forEach(halfHour => {
+        halfHour.classList.remove('half-hour-mousedown');
+      });
+      if (firstDown < halfHours.indexOf(halfHour)) {
+        for (let j = firstDown; j <= halfHours.indexOf(halfHour); j++) {
+            halfHours[j].classList.add('half-hour-mousedown');
+        }
+        startTime = firstDownTime.dataset.startTime + firstDownTime.dataset.period;
+        endTime = halfHour.dataset.endTime + halfHour.dataset.period;
+        selectedTime.textContent = `${startTime} - ${endTime}`
+      }
+      else {
+        for (let j = firstDown; j >= halfHours.indexOf(halfHour); j--) {
+            halfHours[j].classList.add('half-hour-mousedown');
+        }
+        startTime = halfHour.dataset.startTime + halfHour.dataset.period;
+        endTime = firstDownTime.dataset.startTime + firstDownTime.dataset.period;
+        selectedTime.textContent = `${startTime} - ${endTime}`
+      }
+    }
+    else {
+      halfHour.classList.add('half-hour-mousedown');
+      startTime = halfHour.dataset.startTime + halfHour.dataset.period;
+      endTime = halfHour.dataset.endTime + halfHour.dataset.period;
+      selectedTime.textContent = `${startTime} - ${endTime}`
+    }
+  });
+}
 
+daySchedule.addEventListener('mouseleave', () => {
+  mouseDown = false;
 });
+
+
 
 /* Day info functionality */
 
